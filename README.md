@@ -65,8 +65,10 @@ engine
 
 ```
 
-## Validation
+## Schema and rules validation on construction
 
+In order to prevent most common errors, `Engine` does initial validation on the schema, during construction.
+If no `schema` is provided to the constructor 
 
 
 ## Conditional logic

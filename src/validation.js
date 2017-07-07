@@ -2,25 +2,25 @@ import predicate from "predicate";
 import { flatMap, isObject, toError } from "./utils";
 import { OR, AND, NOT } from './constants';
 
-export function predicatesFromRule(rule) {
+export function predicatesFromRule(rule, schema) {
   if (isObject(rule)) {
     return flatMap(Object.keys(rule), p => {
       let comparable = rule[p];
       if (isObject(comparable) || p === NOT) {
         if (p === OR || p === AND) {
           if (Array.isArray(comparable)) {
-            return flatMap(comparable, condition => predicatesFromRule(condition));
+            return flatMap(comparable, condition => predicatesFromRule(condition, schema));
           } else {
             toError(`"${p}" must be an array`);
             return [];
           }
         } else {
-          let predicates = predicatesFromRule(comparable);
+          let predicates = predicatesFromRule(comparable, schema);
           predicates.push(p);
           return predicates;
         }
       } else {
-        return predicatesFromRule(p);
+        return predicatesFromRule(p, schema);
       }
     });
   } else {
@@ -28,32 +28,44 @@ export function predicatesFromRule(rule) {
   }
 }
 
-export function predicatesFromCondition(condition) {
+export function predicatesFromCondition(condition, schema) {
   return flatMap(Object.keys(condition), ref => {
     if (ref === OR || ref === AND) {
-      return flatMap(condition[ref], w => predicatesFromRule(w));
+      if (Array.isArray(condition[ref])) {
+        return flatMap(condition[ref], w => predicatesFromRule(w, schema));
+      } else {
+        toError(`${p} in ${JSON.stringify(condition)} must be an Array`);
+        return [];
+      }
     } else if (ref === NOT) {
-      return predicatesFromCondition(condition[ref]);
+      return predicatesFromCondition(condition[ref], schema);
     } else {
-      return predicatesFromRule(condition[ref]);
+      // TODO disable validation of nested structures
+      let isField = schema.properties[ref] !== undefined;
+      let isArray = isField && schema.properties[ref].type === "array";
+      if (isField && !isArray) {
+        return predicatesFromRule(condition[ref], schema);
+      } else {
+        return [];
+      }
     }
   });
 }
 
-export function listAllPredicates(conditions) {
+export function listAllPredicates(conditions, schema) {
   let allPredicates = flatMap(conditions, condition =>
-    predicatesFromCondition(condition)
+    predicatesFromCondition(condition, schema)
   );
   return allPredicates.filter((v, i, a) => allPredicates.indexOf(v) === i);
 }
 
-export function listInvalidPredicates(conditions) {
-  let refPredicates = listAllPredicates(conditions);
+export function listInvalidPredicates(conditions, schema) {
+  let refPredicates = listAllPredicates(conditions, schema);
   return refPredicates.filter((p) => predicate[p] === undefined);
 }
 
-export function validatePredicates(conditions) {
-  let invalidPredicates = listInvalidPredicates(conditions);
+export function validatePredicates(conditions, schema) {
+  let invalidPredicates = listInvalidPredicates(conditions, schema);
   if (invalidPredicates.length !== 0) {
     toError(`Rule contains invalid predicates ${invalidPredicates}`);
   }
@@ -65,8 +77,12 @@ export function fieldsFromCondition(condition) {
   return flatMap(Object.keys(condition), ref => {
     if (ref === OR || ref === AND) {
       return flatMap(condition[ref], w => fieldsFromCondition(w));
-    } else {
+    } else if (ref === NOT) {
+      return fieldsFromCondition(condition[ref]);
+    } else if(ref.indexOf(".") === -1) {
       return [ref];
+    } else {
+      return [];
     }
   });
 }

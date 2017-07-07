@@ -14,6 +14,12 @@ function conditionsFrom(rules) {
   return rules.map(({ conditions }) => conditions);
 }
 
+let defSchema = { properties: {
+  firstName: { type: "string" },
+  password: { type: "string" },
+  age: { type: "integer" }
+}};
+
 test("Check predicates", () => {
   const conditions = conditionsFrom([
     { conditions: { firstName: "epty" } },
@@ -21,8 +27,8 @@ test("Check predicates", () => {
     { conditions: { age: { less: 20 } } },
   ]);
 
-  let predicates = listInvalidPredicates(conditions);
-  expect(predicates).toEqual(["epty"]);
+  expect(listAllPredicates(conditions, defSchema)).toEqual(["epty", "greater", "less"]);
+  expect(listInvalidPredicates(conditions, defSchema)).toEqual(["epty"]);
 });
 
 test("Two field rule ", () => {
@@ -41,7 +47,7 @@ test("Two field rule ", () => {
     },
   ]);
 
-  let predicates = listAllPredicates(conditions);
+  let predicates = listAllPredicates(conditions, defSchema);
   expect(predicates).toEqual(["empty", "greater", "less"]);
 
   let fields = listAllFields(conditions);
@@ -65,7 +71,7 @@ test("3 field rule ", () => {
     },
   ]);
 
-  let predicates = listAllPredicates(conditions);
+  let predicates = listAllPredicates(conditions, defSchema);
   expect(predicates).toEqual(["empty", "greater", "less"]);
 
   let fields = listAllFields(conditions);
@@ -87,18 +93,11 @@ test("invalidate predicates", () => {
     },
   ]);
 
-  expect(listAllPredicates(invalidConditions)).toEqual(["greater", "less", "wtf"]);
-  expect(listInvalidPredicates(invalidConditions)).toEqual(["wtf"]);
-  expect(() => validatePredicates(invalidConditions)).toThrow();
-  expect(() => testInProd(validatePredicates(invalidConditions))).not.toBeUndefined();
+  expect(listAllPredicates(invalidConditions, defSchema)).toEqual(["greater", "less", "wtf"]);
+  expect(listInvalidPredicates(invalidConditions, defSchema)).toEqual(["wtf"]);
+  expect(() => validatePredicates(invalidConditions, defSchema)).toThrow();
+  expect(() => testInProd(validatePredicates(invalidConditions, defSchema))).not.toBeUndefined();
 });
-
-let schema = {
-  properties: {
-    firstName: { type: "string" },
-    password: { type: "string" },
-  },
-};
 
 test("invalid field", () => {
   let invalidFieldConditions = conditionsFrom([
@@ -116,8 +115,8 @@ test("invalid field", () => {
   ]);
 
   expect(listAllFields(invalidFieldConditions)).toEqual(["lastName", "firstName"]);
-  expect(listInvalidFields(invalidFieldConditions, schema)).toEqual([ "lastName",]);
-  expect(() => validateConditionFields(invalidFieldConditions, schema)).toThrow();
+  expect(listInvalidFields(invalidFieldConditions, defSchema)).toEqual([ "lastName",]);
+  expect(() => validateConditionFields(invalidFieldConditions, defSchema)).toThrow();
 });
 
 test("invalid OR", () => {
@@ -130,7 +129,7 @@ test("invalid OR", () => {
     },
   ]);
 
-  expect(() => validate(invalidOrConditions, schema)).toThrow();
+  expect(() => validatePredicates(invalidOrConditions, defSchema)).toThrow();
 });
 
 test("invalid field or", () => {
@@ -150,7 +149,7 @@ test("invalid field or", () => {
 
   expect(() => predicatesFromRule(invalidFieldOr[0].firstName)).toThrow();
   expect(testInProd(() => predicatesFromRule(invalidFieldOr[0].firstName))).toEqual([]);
-  expect(() => validatePredicates(invalidFieldOr, schema)).toThrow();
+  expect(() => validatePredicates(invalidFieldOr, defSchema)).toThrow();
 });
 
 test("invalid field NOT or", () => {
@@ -165,7 +164,7 @@ test("invalid field NOT or", () => {
     },
   ]);
 
-  expect(() => validatePredicates(invalidFieldNotWithOr, schema)).toThrow();
+  expect(() => validatePredicates(invalidFieldNotWithOr, defSchema)).toThrow();
 });
 
 test("valid field or", () => {
@@ -182,8 +181,8 @@ test("valid field or", () => {
     },
   ]);
 
-  expect(predicatesFromCondition(validFieldOr[0])).toEqual(["is", "is"]);
-  expect(validateConditionFields(validFieldOr, schema)).toBeUndefined();
+  expect(predicatesFromCondition(validFieldOr[0], defSchema)).toEqual(["is", "is"]);
+  expect(validateConditionFields(validFieldOr, defSchema)).toBeUndefined();
 });
 
 test("extract predicates from when with or & and", () => {
