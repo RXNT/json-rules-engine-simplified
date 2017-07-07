@@ -1,10 +1,12 @@
-import validate, {
+import {
   listAllFields,
   listAllPredicates,
   listInvalidFields,
   listInvalidPredicates,
   predicatesFromCondition,
   predicatesFromRule,
+  validatePredicates,
+  validateConditionFields
 } from "../src/validation";
 import { testInProd } from "./utils";
 
@@ -76,7 +78,7 @@ test("list all predicates", () => {
       event: { type: "remove" },
       conditions: {
         age: {
-          and: {
+          some: {
             greater: 5,
             less: 70,
           },
@@ -86,7 +88,7 @@ test("list all predicates", () => {
   ]);
 
   expect(listAllPredicates(invalidConditions)).toEqual(
-    new Set(["greater", "less", "and"])
+    new Set(["greater", "less", "some"])
   );
 });
 
@@ -112,13 +114,9 @@ test("invalid field", () => {
     },
   ]);
 
-  expect(listAllFields(invalidFieldConditions)).toEqual(
-    new Set(["lastName", "firstName"])
-  );
-  expect(listInvalidFields(invalidFieldConditions, schema)).toEqual([
-    "lastName",
-  ]);
-  expect(() => validate(invalidFieldConditions, schema)).toThrow();
+  expect(listAllFields(invalidFieldConditions)).toEqual(new Set(["lastName", "firstName"]));
+  expect(listInvalidFields(invalidFieldConditions, schema)).toEqual([ "lastName",]);
+  expect(() => validateConditionFields(invalidFieldConditions, schema)).toThrow();
 });
 
 test("invalid OR", () => {
@@ -150,9 +148,7 @@ test("invalid field or", () => {
   ]);
 
   expect(() => predicatesFromRule(invalidFieldOr[0].firstName)).toThrow();
-  expect(
-    testInProd(() => predicatesFromRule(invalidFieldOr[0].firstName))
-  ).toEqual([]);
+  expect(testInProd(() => predicatesFromRule(invalidFieldOr[0].firstName))).toEqual([]);
   expect(() => validate(invalidFieldOr, schema)).toThrow();
 });
 
@@ -171,7 +167,7 @@ test("valid field or", () => {
   ]);
 
   expect(predicatesFromCondition(validFieldOr[0])).toEqual(["is", "is"]);
-  expect(validate(validFieldOr, schema)).toBeUndefined();
+  expect(validateConditionFields(validFieldOr, schema)).toBeUndefined();
 });
 
 test("extract predicates from when with or & and", () => {

@@ -1,3 +1,3 @@
-import PredicatesRuleEngine from "./PredicatesRuleEngine";
+import Engine from './Engine';
 
-export default PredicatesRuleEngine;
+export default Engine;

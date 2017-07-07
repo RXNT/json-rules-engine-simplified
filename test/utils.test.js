@@ -1,5 +1,4 @@
 import { flatMap, isObject, isDevelopment, toError } from "../src/utils";
-
 import { testInProd } from "./utils";
 
 test("array flatmap", () => {

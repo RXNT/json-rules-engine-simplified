@@ -18,7 +18,8 @@
   },
   "jest": {
     "verbose": true,
-    "collectCoverage": true
+    "collectCoverage": true,
+    "collectCoverageFrom" : ["src/**/*.{js,jsx}"]
   },
   "prettierOptions": "--jsx-bracket-same-line --trailing-comma es5 --semi",
   "lint-staged": {

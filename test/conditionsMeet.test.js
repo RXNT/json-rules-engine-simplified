@@ -6,17 +6,17 @@ test("sanity checkField", function() {
 });
 
 test("single line", () => {
-  let singleLine = {
+  let condition = {
     firstName: "empty",
   };
-  expect(conditionsMeet(singleLine, {})).toBeTruthy();
-  expect(conditionsMeet(singleLine, { firstName: "some" })).toBeFalsy();
-  expect(conditionsMeet(singleLine, { firstName: "" })).toBeTruthy();
-  expect(conditionsMeet(singleLine, { firstName: undefined })).toBeTruthy();
+  expect(conditionsMeet(condition, {})).toBeTruthy();
+  expect(conditionsMeet(condition, { firstName: "some" })).toBeFalsy();
+  expect(conditionsMeet(condition, { firstName: "" })).toBeTruthy();
+  expect(conditionsMeet(condition, { firstName: undefined })).toBeTruthy();
 });
 
 test("default use and", () => {
-  let rule = {
+  let condition = {
     firstName: {
       equal: "Will",
     },
@@ -24,9 +24,22 @@ test("default use and", () => {
       equal: "Smith",
     },
   };
-  expect(conditionsMeet(rule, { firstName: "Will" })).toBeFalsy();
-  expect(conditionsMeet(rule, { lastName: "Smith" })).toBeFalsy();
+  expect(conditionsMeet(condition, { firstName: "Will" })).toBeFalsy();
+  expect(conditionsMeet(condition, { lastName: "Smith" })).toBeFalsy();
   expect(
-    conditionsMeet(rule, { firstName: "Will", lastName: "Smith" })
+    conditionsMeet(condition, { firstName: "Will", lastName: "Smith" })
   ).toBeTruthy();
+});
+
+test("NOT condition", () => {
+  let condition = {
+    not: {
+      firstName: {
+        equal: "Will"
+      }
+    }
+  };
+  expect(conditionsMeet(condition, { firstName: "Will" })).toBeFalsy();
+  expect(conditionsMeet(condition, { firstName: "Smith" })).toBeTruthy();
+  expect(conditionsMeet(condition, { firstName: "Will", lastName: "Smith" })).toBeFalsy();
 });

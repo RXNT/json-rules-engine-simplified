@@ -49,6 +49,16 @@ test("or with array", () => {
   expect(checkField(31, rule)).toBeFalsy();
 });
 
+test("and with array", () => {
+  let rule = { and: [{ greater: 5, less: 12 }, { greater: 10, less: 30 }] };
+  expect(checkField(1, rule)).toBeFalsy();
+  expect(checkField(8, rule)).toBeFalsy();
+  expect(checkField(15, rule)).toBeFalsy();
+  expect(checkField(21, rule)).toBeFalsy();
+  expect(checkField(31, rule)).toBeFalsy();
+  expect(checkField(11, rule)).toBeTruthy();
+});
+
 test("NOT empty checkField", () => {
   expect(checkField("", { not: "empty" })).toBeFalsy();
   expect(checkField(" ", { not: "empty" })).toBeTruthy();
@@ -63,4 +73,14 @@ test("invalid rule", () => {
   expect(checkField(1, { and: { less: 50, greater: 5 } })).toBeFalsy();
   expect(checkField(10, { and: { less: 50, greater: 5 } })).toBeFalsy();
   expect(checkField(60, { and: { less: 50, greater: 5 } })).toBeFalsy();
+  expect(checkField(60, { '&': { less: 50, greater: 5 } })).toBeFalsy();
 });
+
+test("check array", () => {
+  expect(checkField([ 1, 2, 3, 4 ], { less: 50, greater: 5 })).toBeFalsy();
+  expect(checkField([ 1, 2, 3, 4, 5, 6 ], { less: 50, greater: 5 })).toBeTruthy();
+
+  expect(checkField([ "B", "C", "D", "E"], { equal: "A" })).toBeFalsy();
+  expect(checkField([ "A", "B", "C", "D", "E"], { equal: "A" })).toBeTruthy();
+});
+
