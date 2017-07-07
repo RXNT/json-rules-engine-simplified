@@ -150,7 +150,7 @@ test("invalid field or", () => {
 
   expect(() => predicatesFromRule(invalidFieldOr[0].firstName)).toThrow();
   expect(testInProd(() => predicatesFromRule(invalidFieldOr[0].firstName))).toEqual([]);
-  expect(() => validate(invalidFieldOr, schema)).toThrow();
+  expect(() => validatePredicates(invalidFieldOr, schema)).toThrow();
 });
 
 test("invalid field NOT or", () => {
@@ -165,7 +165,7 @@ test("invalid field NOT or", () => {
     },
   ]);
 
-  expect(() => validate(invalidFieldNotWithOr, schema)).toThrow();
+  expect(() => validatePredicates(invalidFieldNotWithOr, schema)).toThrow();
 });
 
 test("valid field or", () => {

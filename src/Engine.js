@@ -7,9 +7,9 @@ class Engine {
     this.rules = rules;
     if (isDevelopment()) {
       let conditions = rules.map(rule => rule.conditions);
-      validatePredicates(conditions);
       if (schema !== undefined && schema !== null) {
         if (isObject(schema)) {
+          validatePredicates(conditions);
           validateConditionFields(conditions, schema)
         } else {
           toError(`Expected valid schema object, but got - ${schema}`)

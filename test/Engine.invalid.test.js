@@ -28,12 +28,12 @@ let schema = {
 };
 
 test("ignore invalid rules if no schema provided", () => {
-  expect(() => new Engine(invalidRules)).not.toBeUndefined();
+  expect(() => new Engine(invalidRules)).not.toThrow();
 });
 
-test("ignore invalid rules with invalid schema", () => {
-  expect(() => new Engine({}, [])).toThrow();
-  expect(() => new Engine({}, "schema")).toThrow();
+test("ignore empty rules with invalid schema", () => {
+  expect(() => new Engine(invalidRules, [])).toThrow();
+  expect(() => new Engine(invalidRules, "schema")).toThrow();
 });
 
 test("initialize with invalid rules", () => {
