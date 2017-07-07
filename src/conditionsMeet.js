@@ -1,5 +1,6 @@
 import { isObject, toError } from "./utils";
-import checkField, { OR, AND, NOT} from "./checkField";
+import checkField from "./checkField";
+import { OR, AND, NOT } from './constants';
 import selectn from "selectn";
 
 export default function conditionsMeet(conditions, formData) {

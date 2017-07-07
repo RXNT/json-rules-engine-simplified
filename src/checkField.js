@@ -1,9 +1,7 @@
 import predicate from "predicate";
 import { isObject } from "./utils";
 
-export const OR = "or";
-export const AND = "and";
-export const NOT = "not";
+import { OR, AND, NOT } from './constants';
 
 const POSITIVE_PREDICATE = predicate;
 const NEGATIVE_PREDICATE = predicate.not;

@@ -1,7 +1,6 @@
 import predicate from "predicate";
 import { flatMap, isObject, toError } from "./utils";
-
-import { NOT, AND, OR } from './checkField';
+import { OR, AND, NOT } from './constants';
 
 export function predicatesFromRule(rule) {
   if (isObject(rule)) {
@@ -33,6 +32,8 @@ export function predicatesFromCondition(condition) {
   return flatMap(Object.keys(condition), ref => {
     if (ref === OR || ref === AND) {
       return flatMap(condition[ref], w => predicatesFromRule(w));
+    } else if (ref === NOT) {
+      return predicatesFromCondition(condition[ref]);
     } else {
       return predicatesFromRule(condition[ref]);
     }
@@ -43,14 +44,22 @@ export function listAllPredicates(conditions) {
   let allPredicates = flatMap(conditions, condition =>
     predicatesFromCondition(condition)
   );
-  return new Set(allPredicates);
+  return allPredicates.filter((v, i, a) => allPredicates.indexOf(v) === i);
 }
 
-export function listInvalidPredicates(rules) {
-  let rulePredicates = listAllPredicates(rules);
-  Object.keys(predicate).forEach(p => rulePredicates.delete(p));
-  return Array.from(rulePredicates);
+export function listInvalidPredicates(conditions) {
+  let refPredicates = listAllPredicates(conditions);
+  return refPredicates.filter((p) => predicate[p] === undefined);
 }
+
+export function validatePredicates(conditions) {
+  let invalidPredicates = listInvalidPredicates(conditions);
+  if (invalidPredicates.length !== 0) {
+    toError(`Rule contains invalid predicates ${invalidPredicates}`);
+  }
+}
+
+
 
 export function fieldsFromCondition(condition) {
   return flatMap(Object.keys(condition), ref => {
@@ -66,13 +75,12 @@ export function listAllFields(conditions) {
   let allFields = flatMap(conditions, condition =>
     fieldsFromCondition(condition)
   );
-  return new Set(allFields);
+  return allFields.filter((v, i, a) => allFields.indexOf(v) === i);
 }
 
 export function listInvalidFields(conditions, schema) {
   let ruleFields = listAllFields(conditions);
-  Object.keys(schema.properties).forEach(f => ruleFields.delete(f));
-  return Array.from(ruleFields);
+  return ruleFields.filter(field => schema.properties[field] === undefined);
 }
 
 export function validateConditionFields(conditions, schema) {
@@ -82,9 +90,3 @@ export function validateConditionFields(conditions, schema) {
   }
 }
 
-export function validatePredicates(conditions) {
-  let invalidPredicates = listInvalidPredicates(conditions);
-  if (invalidPredicates.length !== 0) {
-    toError(`Rule contains invalid predicates ${invalidPredicates}`);
-  }
-}
