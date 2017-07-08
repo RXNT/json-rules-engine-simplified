@@ -12,7 +12,7 @@
     "dist": "npm run build:lib && npm run build:dist",
     "lint": "eslint src test",
     "precommit": "lint-staged",
-    "publish-to-npm": "npm run dist && npm publish",
+    "publish-to-npm": "npm run dist && npm version patch && npm publish",
     "tdd": "jest --watchAll",
     "test": "jest"
   },
