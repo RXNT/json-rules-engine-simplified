@@ -8,7 +8,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         publicPath: "/dist/",
-        filename: "form-with-predicate.js",
+        filename: "json-rules-engine-simplified.js",
         library: "JSONSchemaForm",
         libraryTarget: "umd"
     },
