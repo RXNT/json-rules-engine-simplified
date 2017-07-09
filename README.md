@@ -1,13 +1,13 @@
 # json-rules-engine-simplified
 A simple rules engine expressed in JSON
 
-The primary goal of this project was to be used 
-as alternative to [json-rules-engine](https://github.com/CacheControl/json-rules-engine) in [react-jsonschema-form-conditionals](https://github.com/RxNT/react-jsonschema-form-conditionals),
-as such it has some functionality, that might be specific, but there is nothing preventing it from more generic use. 
+The primary goal of this project is to be 
+an alternative of [json-rules-engine](https://github.com/CacheControl/json-rules-engine) for [react-jsonschema-form-conditionals](https://github.com/RxNT/react-jsonschema-form-conditionals),
+as such it has similar interface and configuration, but simplified predicate language, similar to SQL. 
 
 ## Features
 
-- Optional schema and rules validation, to prevent runtime surprises
+- Optional schema and rules validation
 - Basic boolean operations (`and` `or` and `not`) that allow to have any arbitrary complexity 
 - Rules expressed in simple, easy to read JSON 
 - Declarative conditional logic with [predicates](https://github.com/landau/predicate)
@@ -36,21 +36,16 @@ let rules = [{
     },
     event: {
         type: "remove",
-        params: { fields: [ "password" ] },
+        params: { 
+            fields: [ "password" ]
+        },
     }
 }];
-
-let schema = {
-    properties: {
-        firstName: { type: "string" },
-        lastName: { type: "string" }
-    }
-}
 
 /**
  * Setup a new engine
  */
-let engine = new Engine(rules, schema);
+let engine = new Engine(rules);
 
 let formData = {
   lastName: "Smit"
