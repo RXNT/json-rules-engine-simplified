@@ -387,9 +387,7 @@ Let's say we need to require `state`, when `work` has a `name` `congressman`, th
 ```js
 let rules = [{
     conditions: {
-      "work.name": {
-        name: { equals: "congressman" },
-      }
+      "work.name": { is: "congressman" }
     },
     event: { 
       type: "require",
@@ -409,7 +407,7 @@ This can be expressed like this:
 let rules = [{
     conditions: {
       hobbies: {
-        name: { equals: "baseball" },
+        name: { is: "baseball" },
       }
     },
     event: { 

@@ -258,107 +258,106 @@ test("multi field OR", () => {
   ]);
 });
 
-/**
-#### OR
-
-In addition to previous rule we need `bio`, if `state` is `NY`.
-
-```js
-let rules = [{
-  conditions: {
-    or: [
-      {
-        age: { less : 70 },
-        country: { is: "USA" }
-      },
-      {
-        state: { is: "NY"}
-      }
-    ]
-  },
-  event: {
-    type: "require",
-    params: { fields: [ "bio" ]}
-  }
-}]
-  ```
-
-#### NOT
-
-When we don't require `bio` we need `zip` code.
-
-```js
-let rules = [{
-  conditions: {
-    not: {
-      or: [
-        {
-          age: { less : 70 },
-          country: { is: "USA" }
+test("multi field NOT", () => {
+  let rules = [
+    {
+      conditions: {
+        not: {
+          or: [
+            {
+              age: { less: 70 },
+              country: { is: "USA" },
+            },
+            {
+              state: { is: "NY" },
+            },
+          ],
         },
-        {
-          state: { is: "NY"}
-        }
-      ]
-    }
-  },
-  event: {
-    type: "require",
-    params: { fields: [ "zip" ]}
-  }
-}]
-  ```
+      },
+      event: EVENT,
+    },
+  ];
 
-### Nested object queries
+  let engine = new Engine(rules, schema);
+  expect.assertions(5);
 
-Rules engine supports querying inside nested objects, with [selectn](https://github.com/wilmoore/selectn.js),
-any data query that works in [selectn](https://github.com/wilmoore/selectn.js), will work in here
+  return Promise.all([
+    engine
+      .run({ age: 16, country: "China", state: "Beijing" })
+      .then(res => expect(res).toEqual([EVENT])),
+    engine
+      .run({ age: 16, country: "China", state: "NY" })
+      .then(res => expect(res).toEqual([])),
+    engine
+      .run({ age: 16, country: "USA" })
+      .then(res => expect(res).toEqual([])),
+    engine.run({ age: 80, state: "NY" }).then(res => expect(res).toEqual([])),
+    engine
+      .run({ age: 69, country: "USA" })
+      .then(res => expect(res).toEqual([])),
+  ]);
+});
 
-Let's say we need to require `state`, when `work` has a `name` `congressman`, this is how we can do this:
+test("Nested object queries", () => {
+  let rules = [
+    {
+      conditions: {
+        "work.name": { is: "congressman" },
+      },
+      event: EVENT,
+    },
+  ];
 
-```js
-let rules = [{
-  conditions: {
-    "work.name": {
-      name: { equals: "congressman" },
-    }
-  },
-  event: {
-    type: "require",
-    params: { fields: [ "state" ]}
-  }
-}]
-  ```
+  let engine = new Engine(rules, schema);
+  expect.assertions(5);
 
-### Nested arrays object queries
+  return Promise.all([
+    engine.run({ work: {} }).then(res => expect(res).toEqual([])),
+    engine.run({}).then(res => expect(res).toEqual([])),
+    engine
+      .run({ work: { name: "congressman" } })
+      .then(res => expect(res).toEqual([EVENT])),
+    engine
+      .run({ work: { name: "president" } })
+      .then(res => expect(res).toEqual([])),
+    engine
+      .run({ work: { name: "blacksmith" } })
+      .then(res => expect(res).toEqual([])),
+  ]);
+});
 
-Sometimes we need to make changes to the form if some nested condition is true. 
+test("Nested arrays object queries", () => {
+  let rules = [
+    {
+      conditions: {
+        hobbies: {
+          name: { is: "baseball" },
+        },
+      },
+      event: EVENT,
+    },
+  ];
 
-For example if one of the `hobbies` is `baseball`, we need to make `state` `required`.
-This can be expressed like this:
+  let engine = new Engine(rules, schema);
+  expect.assertions(5);
 
-```js
-let rules = [{
-  conditions: {
-    hobbies: {
-      name: { equals: "baseball" },
-    }
-  },
-  event: {
-    type: "require",
-    params: { fields: [ "state" ]}
-  }
-}]
-  ``` 
-
-Rules engine will go through all the elements in the array and trigger `require` if `any` of the elements meet the criteria 
-
-## Support
-
-If you are having issues, please let us know.
-We have a mailing list located at: ...
-
-## License
-
-The project is licensed under the Apache Licence 2.0.
- **/
+  return Promise.all([
+    engine.run({ hobbies: [] }).then(res => expect(res).toEqual([])),
+    engine.run({}).then(res => expect(res).toEqual([])),
+    engine
+      .run({ hobbies: [{ name: "baseball" }] })
+      .then(res => expect(res).toEqual([EVENT])),
+    engine
+      .run({
+        hobbies: [
+          { name: "reading" },
+          { name: "jumping" },
+          { name: "baseball" },
+        ],
+      })
+      .then(res => expect(res).toEqual([EVENT])),
+    engine
+      .run({ hobbies: [{ name: "reading" }, { name: "jumping" }] })
+      .then(res => expect(res).toEqual([])),
+  ]);
+});
