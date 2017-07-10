@@ -417,12 +417,7 @@ let rules = [{
 }]
 ``` 
 
-Rules engine will go through all the elements in the array and trigger `require` if `any` of the elements meet the criteria 
-
-## Support
-
-If you are having issues, please let us know.
-We have a mailing list located at: ...
+Rules engine will go through all the elements in the array and trigger `require` if `any` of the elements meet the criteria.
 
 ## License
 
