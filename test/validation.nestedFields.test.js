@@ -1,16 +1,18 @@
-import Engine from '../src/Engine';
+import Engine from "../src/Engine";
 
-let rules = [{
-  conditions: {
-    medications: {
-      type: { equal: "D" },
+let rules = [
+  {
+    conditions: {
+      medications: {
+        type: { equal: "D" },
+      },
+      "primaryMedication.type": { equal: "C" },
     },
-    "primaryMedication.type": { equal: "C" }
+    event: {
+      type: "remove",
+    },
   },
-  event: {
-    type: 'remove'
-  }
-}];
+];
 
 let schema = {
   definitions: {
@@ -20,14 +22,10 @@ let schema = {
         type: { type: "string" },
         isLiquid: { type: "boolean" },
       },
-    }
+    },
   },
   type: "object",
-  required: [
-    "medications",
-    "firstName",
-    "lastName",
-  ],
+  required: ["medications", "firstName", "lastName"],
   properties: {
     firstName: {
       type: "string",
@@ -37,22 +35,19 @@ let schema = {
     },
     medications: {
       type: "array",
-      items: { "$ref": "#/definitions/hobby" }
+      items: { $ref: "#/definitions/hobby" },
     },
     primaryMedication: {
-      "$ref": "#/definitions/hobby"
-    }
-  }
+      $ref: "#/definitions/hobby",
+    },
+  },
 };
-
 
 test("valid rules", () => {
   expect(new Engine(rules, schema)).not.toBeUndefined();
 
   let engine = new Engine(rules, schema);
-  return engine.
-    run({ primaryMedication: { type: "C" }, medications: [ { type: "D" } ]}).
-    then(event => expect(event.length).toEqual(1));
-
+  return engine
+    .run({ primaryMedication: { type: "C" }, medications: [{ type: "D" }] })
+    .then(event => expect(event.length).toEqual(1));
 });
-

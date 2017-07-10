@@ -30,7 +30,7 @@ test("NOT with AND in ( > 5 && < 12) ", function() {
   expect(checkField(10, { not: { greater: 5 } })).toBeFalsy();
   expect(checkField(10, { not: { less: 12 } })).toBeFalsy();
   expect(checkField(10, { not: { greater: 5, less: 12 } })).toBeFalsy();
-  expect(checkField(15, { not: { greater: 5, less: 12 } })).toBeFalsy();
+  expect(checkField(15, { not: { greater: 5, less: 12 } })).toBeTruthy();
 });
 
 test("OR with < 5 || > 12", () => {
@@ -73,14 +73,13 @@ test("invalid rule", () => {
   expect(checkField(1, { and: { less: 50, greater: 5 } })).toBeFalsy();
   expect(checkField(10, { and: { less: 50, greater: 5 } })).toBeFalsy();
   expect(checkField(60, { and: { less: 50, greater: 5 } })).toBeFalsy();
-  expect(checkField(60, { '&': { less: 50, greater: 5 } })).toBeFalsy();
+  expect(checkField(60, { "&": { less: 50, greater: 5 } })).toBeFalsy();
 });
 
 test("check array", () => {
-  expect(checkField([ 1, 2, 3, 4 ], { less: 50, greater: 5 })).toBeFalsy();
-  expect(checkField([ 1, 2, 3, 4, 5, 6 ], { less: 50, greater: 5 })).toBeTruthy();
+  expect(checkField([1, 2, 3, 4], { less: 50, greater: 5 })).toBeFalsy();
+  expect(checkField([1, 2, 3, 4, 5, 6], { less: 50, greater: 5 })).toBeTruthy();
 
-  expect(checkField([ "B", "C", "D", "E"], { equal: "A" })).toBeFalsy();
-  expect(checkField([ "A", "B", "C", "D", "E"], { equal: "A" })).toBeTruthy();
+  expect(checkField(["B", "C", "D", "E"], { equal: "A" })).toBeFalsy();
+  expect(checkField(["A", "B", "C", "D", "E"], { equal: "A" })).toBeTruthy();
 });
-

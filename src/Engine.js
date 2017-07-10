@@ -10,14 +10,14 @@ class Engine {
       if (schema !== undefined && schema !== null) {
         if (isObject(schema)) {
           validatePredicates(conditions, schema);
-          validateConditionFields(conditions, schema)
+          validateConditionFields(conditions, schema);
         } else {
-          toError(`Expected valid schema object, but got - ${schema}`)
+          toError(`Expected valid schema object, but got - ${schema}`);
         }
       }
     }
   }
-  run = (formData) => Promise.resolve(applicableActions(this.rules, formData));
+  run = formData => Promise.resolve(applicableActions(this.rules, formData));
 }
 
 export default Engine;

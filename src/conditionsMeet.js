@@ -1,26 +1,26 @@
 import { isObject, toError } from "./utils";
 import checkField from "./checkField";
-import { OR, AND, NOT } from './constants';
+import { OR, AND, NOT } from "./constants";
 import selectn from "selectn";
 
 export default function conditionsMeet(conditions, formData) {
   if (!isObject(conditions) || !isObject(formData)) {
     toError(`Rule ${conditions} with ${formData} can't be processed`);
   }
-  return Object.keys(conditions).every(conditionKey => {
-    let refFieldRule = conditions[conditionKey];
-    if (conditionKey === OR) {
-      return refFieldRule.some(sr => conditionsMeet(sr, formData));
-    } else if (conditionKey === AND) {
-      return refFieldRule.every(sr => conditionsMeet(sr, formData));
-    } else if (conditionKey === NOT) {
-      return !conditionsMeet(refFieldRule, formData);
+  return Object.keys(conditions).every(ref => {
+    let refRule = conditions[ref];
+    if (ref === OR) {
+      return refRule.some(rule => conditionsMeet(rule, formData));
+    } else if (ref === AND) {
+      return refRule.every(rule => conditionsMeet(rule, formData));
+    } else if (ref === NOT) {
+      return !conditionsMeet(refRule, formData);
     } else {
-      let refVal = selectn(conditionKey, formData);
+      let refVal = selectn(ref, formData);
       if (Array.isArray(refVal)) {
-        return refVal.some(val => conditionsMeet(refFieldRule, val));
+        return refVal.some(val => conditionsMeet(refRule, val));
       } else {
-        return checkField(refVal, refFieldRule);
+        return checkField(refVal, refRule);
       }
     }
   });

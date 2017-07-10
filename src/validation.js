@@ -1,6 +1,6 @@
 import predicate from "predicate";
 import { flatMap, isObject, toError } from "./utils";
-import { OR, AND, NOT } from './constants';
+import { OR, AND, NOT } from "./constants";
 
 export function predicatesFromRule(rule, schema) {
   if (isObject(rule)) {
@@ -9,7 +9,9 @@ export function predicatesFromRule(rule, schema) {
       if (isObject(comparable) || p === NOT) {
         if (p === OR || p === AND) {
           if (Array.isArray(comparable)) {
-            return flatMap(comparable, condition => predicatesFromRule(condition, schema));
+            return flatMap(comparable, condition =>
+              predicatesFromRule(condition, schema)
+            );
           } else {
             toError(`"${p}" must be an array`);
             return [];
@@ -34,7 +36,9 @@ export function predicatesFromCondition(condition, schema) {
       if (Array.isArray(condition[ref])) {
         return flatMap(condition[ref], w => predicatesFromRule(w, schema));
       } else {
-        toError(`${p} in ${JSON.stringify(condition)} must be an Array`);
+        toError(
+          `${ref} with ${JSON.stringify(condition[ref])} must be an Array`
+        );
         return [];
       }
     } else if (ref === NOT) {
@@ -61,7 +65,7 @@ export function listAllPredicates(conditions, schema) {
 
 export function listInvalidPredicates(conditions, schema) {
   let refPredicates = listAllPredicates(conditions, schema);
-  return refPredicates.filter((p) => predicate[p] === undefined);
+  return refPredicates.filter(p => predicate[p] === undefined);
 }
 
 export function validatePredicates(conditions, schema) {
@@ -71,15 +75,13 @@ export function validatePredicates(conditions, schema) {
   }
 }
 
-
-
 export function fieldsFromCondition(condition) {
   return flatMap(Object.keys(condition), ref => {
     if (ref === OR || ref === AND) {
       return flatMap(condition[ref], w => fieldsFromCondition(w));
     } else if (ref === NOT) {
       return fieldsFromCondition(condition[ref]);
-    } else if(ref.indexOf(".") === -1) {
+    } else if (ref.indexOf(".") === -1) {
       return [ref];
     } else {
       return [];
@@ -105,4 +107,3 @@ export function validateConditionFields(conditions, schema) {
     toError(`Rule contains invalid fields ${invalidFields}`);
   }
 }
-
