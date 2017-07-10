@@ -185,32 +185,80 @@ test("OR", () => {
   ]);
 });
 
+test("multi field default AND", () => {
+  let rules = [
+    {
+      conditions: {
+        age: { less: 70 },
+        country: { is: "USA" },
+      },
+      event: EVENT,
+    },
+  ];
+
+  let engine = new Engine(rules, schema);
+  expect.assertions(5);
+
+  return Promise.all([
+    engine
+      .run({ age: 16, country: "China" })
+      .then(res => expect(res).toEqual([])),
+    engine
+      .run({ age: 16, country: "Mexico" })
+      .then(res => expect(res).toEqual([])),
+    engine
+      .run({ age: 16, country: "USA" })
+      .then(res => expect(res).toEqual([EVENT])),
+    engine
+      .run({ age: 69, country: "USA" })
+      .then(res => expect(res).toEqual([EVENT])),
+    engine
+      .run({ age: 70, country: "USA" })
+      .then(res => expect(res).toEqual([])),
+  ]);
+});
+
+test("multi field OR", () => {
+  let rules = [
+    {
+      conditions: {
+        or: [
+          {
+            age: { less: 70 },
+            country: { is: "USA" },
+          },
+          {
+            state: { is: "NY" },
+          },
+        ],
+      },
+      event: EVENT,
+    },
+  ];
+
+  let engine = new Engine(rules, schema);
+  expect.assertions(5);
+
+  return Promise.all([
+    engine
+      .run({ age: 16, country: "China", state: "Beijing" })
+      .then(res => expect(res).toEqual([])),
+    engine
+      .run({ age: 16, country: "China", state: "NY" })
+      .then(res => expect(res).toEqual([EVENT])),
+    engine
+      .run({ age: 16, country: "USA" })
+      .then(res => expect(res).toEqual([EVENT])),
+    engine
+      .run({ age: 80, state: "NY" })
+      .then(res => expect(res).toEqual([EVENT])),
+    engine
+      .run({ age: 69, country: "USA" })
+      .then(res => expect(res).toEqual([EVENT])),
+  ]);
+});
+
 /**
-### Boolean operations on multi fields
-
-To support cases, when action depends on more, than one field meeting criteria we introduced
-multi fields boolean operations.
-
-#### Default AND operation
-
-Let's say, when `age` is less than 70 and `country` is `USA` we want to `require` `bio`.
-
-```js
-let rules = [{
-  conditions: {
-    age: { less : 70 },
-    country: { is: "USA" }
-  },
-  event: {
-    type: "require",
-    params: { fields: [ "bio" ]}
-  }
-}]
-  ```
-
-This is the way we can express this. By default each field is treated as a 
-separate condition and all conditions must be meet.
-
 #### OR
 
 In addition to previous rule we need `bio`, if `state` is `NY`.

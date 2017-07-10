@@ -32,23 +32,22 @@ export function predicatesFromRule(rule, schema) {
 
 export function predicatesFromCondition(condition, schema) {
   return flatMap(Object.keys(condition), ref => {
+    let refVal = condition[ref];
     if (ref === OR || ref === AND) {
-      if (Array.isArray(condition[ref])) {
-        return flatMap(condition[ref], w => predicatesFromRule(w, schema));
+      if (Array.isArray(refVal)) {
+        return flatMap(refVal, c => predicatesFromCondition(c, schema));
       } else {
-        toError(
-          `${ref} with ${JSON.stringify(condition[ref])} must be an Array`
-        );
+        toError(`${ref} with ${JSON.stringify(refVal)} must be an Array`);
         return [];
       }
     } else if (ref === NOT) {
-      return predicatesFromCondition(condition[ref], schema);
+      return predicatesFromCondition(refVal, schema);
     } else {
       // TODO disable validation of nested structures
       let isField = schema.properties[ref] !== undefined;
       let isArray = isField && schema.properties[ref].type === "array";
       if (isField && !isArray) {
-        return predicatesFromRule(condition[ref], schema);
+        return predicatesFromRule(refVal, schema);
       } else {
         return [];
       }

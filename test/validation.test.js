@@ -209,13 +209,35 @@ test("valid field or", () => {
   expect(validateConditionFields(validFieldOr, defSchema)).toBeUndefined();
 });
 
-test("extract predicates from when with or & and", () => {
-  expect(predicatesFromCondition({ or: [{ is: 1 }, { less: 10 }] })).toEqual([
+test("extract predicates from rule when with or & and", () => {
+  expect(predicatesFromRule({ or: [{ is: 1 }, { less: 10 }] })).toEqual([
     "is",
     "less",
   ]);
-  expect(predicatesFromCondition({ and: [{ is: 1 }, { less: 10 }] })).toEqual([
+  expect(predicatesFromRule({ and: [{ is: 1 }, { less: 10 }] })).toEqual([
     "is",
     "less",
   ]);
+});
+
+test("extract predicates from condition when with or & and", () => {
+  let schema = {
+    properties: {
+      age: { type: "integer" },
+      grade: { type: "integer" },
+    },
+  };
+
+  expect(
+    predicatesFromCondition(
+      { or: [{ age: { is: 1 } }, { grade: { less: 10 } }] },
+      schema
+    )
+  ).toEqual(["is", "less"]);
+  expect(
+    predicatesFromCondition(
+      { and: [{ age: { is: 1 } }, { grade: { less: 10 } }] },
+      schema
+    )
+  ).toEqual(["is", "less"]);
 });
