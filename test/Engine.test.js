@@ -35,9 +35,7 @@ test("age greater 5", () => {
 });
 
 test("age less 5", () => {
-  return engine
-    .run({ age: 4 })
-    .then(actions => expect(actions).toEqual([]));
+  return engine.run({ age: 4 }).then(actions => expect(actions).toEqual([]));
 });
 
 test("age less 70 ", () => {
@@ -51,7 +49,5 @@ test("age less 70 ", () => {
 });
 
 test("age greater 70 ", () => {
-  return engine
-    .run({ age: 71 })
-    .then(actions => expect(actions).toEqual([]));
+  return engine.run({ age: 71 }).then(actions => expect(actions).toEqual([]));
 });

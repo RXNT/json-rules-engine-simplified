@@ -35,11 +35,13 @@ test("NOT condition", () => {
   let condition = {
     not: {
       firstName: {
-        equal: "Will"
-      }
-    }
+        equal: "Will",
+      },
+    },
   };
   expect(conditionsMeet(condition, { firstName: "Will" })).toBeFalsy();
   expect(conditionsMeet(condition, { firstName: "Smith" })).toBeTruthy();
-  expect(conditionsMeet(condition, { firstName: "Will", lastName: "Smith" })).toBeFalsy();
+  expect(
+    conditionsMeet(condition, { firstName: "Will", lastName: "Smith" })
+  ).toBeFalsy();
 });
