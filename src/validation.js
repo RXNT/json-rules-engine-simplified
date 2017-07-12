@@ -1,5 +1,11 @@
 import predicate from "predicate";
-import { flatMap, isObject, toError, isArray, extractRefSchema } from "./utils";
+import {
+  flatMap,
+  isObject,
+  toError,
+  isRefArray,
+  extractRefSchema,
+} from "./utils";
 import { OR, AND, NOT } from "./constants";
 
 export function predicatesFromRule(rule, schema) {
@@ -42,22 +48,27 @@ export function predicatesFromCondition(condition, schema) {
       }
     } else if (ref === NOT) {
       return predicatesFromCondition(refVal, schema);
-    } else {
-      // TODO disable validation of nested structures
-      let isField = schema.properties[ref] !== undefined;
-      let isFieldAnArray = isArray(ref, schema);
-      console.log(`${ref} is field ${isField} and array ${isFieldAnArray}`);
-      if (isField && !isFieldAnArray) {
-        return predicatesFromRule(refVal, schema);
+    } else if (ref.indexOf(".") !== -1) {
+      let separator = ref.indexOf(".");
+      let schemaField = ref.substr(0, separator);
+      let subSchema = extractRefSchema(schemaField, schema);
+
+      if (subSchema) {
+        let subSchemaField = ref.substr(separator + 1);
+        let newCondition = { [subSchemaField]: refVal };
+        return predicatesFromCondition(newCondition, subSchema);
       } else {
-        if (isFieldAnArray) {
-          let refSchema = extractRefSchema(ref, schema);
-          console.log(`Ref schema ${JSON.stringify(refSchema)}`);
-          return refSchema ? predicatesFromCondition(refVal, refSchema) : [];
-        } else {
-          return [];
-        }
+        toError(`Can't find schema for ${schemaField}`);
+        return [];
       }
+    } else if (isRefArray(ref, schema)) {
+      let refSchema = extractRefSchema(ref, schema);
+      return refSchema ? predicatesFromCondition(refVal, refSchema) : [];
+    } else if (schema.properties[ref]) {
+      return predicatesFromRule(refVal, schema);
+    } else {
+      toError(`Can't validate ${ref}`);
+      return [];
     }
   });
 }

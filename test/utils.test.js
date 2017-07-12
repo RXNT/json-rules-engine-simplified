@@ -4,7 +4,7 @@ import {
   isDevelopment,
   toError,
   extractRefSchema,
-  isArray,
+  isRefArray,
 } from "../src/utils";
 import { testInProd } from "./utils";
 
@@ -55,13 +55,16 @@ test("extract referenced schema", () => {
         items: { $ref: "#/definitions/medication" },
       },
       primaryMedication: {
-        $ref: "#/definitions/medications",
+        $ref: "#/definitions/medication",
       },
     },
   };
 
-  expect(isArray("medications", schema)).toBeTruthy();
+  expect(isRefArray("medications", schema)).toBeTruthy();
   expect(extractRefSchema("medications", schema)).toEqual(
+    schema.definitions.medication
+  );
+  expect(extractRefSchema("primaryMedication", schema)).toEqual(
     schema.definitions.medication
   );
 });
