@@ -1,5 +1,5 @@
 import predicate from "predicate";
-import { flatMap, isObject, toError } from "./utils";
+import { flatMap, isObject, toError, isArray, extractRefSchema } from "./utils";
 import { OR, AND, NOT } from "./constants";
 
 export function predicatesFromRule(rule, schema) {
@@ -45,11 +45,18 @@ export function predicatesFromCondition(condition, schema) {
     } else {
       // TODO disable validation of nested structures
       let isField = schema.properties[ref] !== undefined;
-      let isArray = isField && schema.properties[ref].type === "array";
-      if (isField && !isArray) {
+      let isFieldAnArray = isArray(ref, schema);
+      console.log(`${ref} is field ${isField} and array ${isFieldAnArray}`);
+      if (isField && !isFieldAnArray) {
         return predicatesFromRule(refVal, schema);
       } else {
-        return [];
+        if (isFieldAnArray) {
+          let refSchema = extractRefSchema(ref, schema);
+          console.log(`Ref schema ${JSON.stringify(refSchema)}`);
+          return refSchema ? predicatesFromCondition(refVal, refSchema) : [];
+        } else {
+          return [];
+        }
       }
     }
   });

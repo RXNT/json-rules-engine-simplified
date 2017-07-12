@@ -1,10 +1,11 @@
 import Engine from "../src/Engine";
+import { listAllPredicates } from "../src/validation";
 
 let rules = [
   {
     conditions: {
       medications: {
-        type: { equal: "D" },
+        type: { is: "D" },
       },
       "primaryMedication.type": { equal: "C" },
     },
@@ -35,13 +36,19 @@ let schema = {
     },
     medications: {
       type: "array",
-      items: { $ref: "#/definitions/hobby" },
+      items: { $ref: "#/definitions/medications" },
     },
     primaryMedication: {
-      $ref: "#/definitions/hobby",
+      $ref: "#/definitions/medications",
     },
   },
 };
+
+test("list all predicates", () => {
+  expect(listAllPredicates(rules.map(r => r.conditions), schema)).toEqual([
+    "is",
+  ]);
+});
 
 test("valid rules", () => {
   expect(new Engine(rules, schema)).not.toBeUndefined();
