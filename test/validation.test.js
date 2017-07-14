@@ -188,6 +188,22 @@ test("invalid field NOT or", () => {
   expect(() => validatePredicates(invalidFieldNotWithOr, defSchema)).toThrow();
 });
 
+test("invalid fields 1", () => {
+  let inValidField = conditionsFrom([
+    {
+      conditions: {
+        lastName: "empty",
+      },
+      event: {
+        type: "remove",
+      },
+    },
+  ]);
+
+  expect(listAllFields(inValidField)).toEqual(["lastName"]);
+  expect(() => validateConditionFields(inValidField, defSchema)).toThrow();
+});
+
 test("valid field or", () => {
   let validFieldOr = conditionsFrom([
     {
