@@ -24,10 +24,17 @@ export function isRefArray(field, schema) {
 }
 
 function fetchSchema(ref, schema) {
-  let relevantSchema = ref.split("/");
-  return relevantSchema
-    .filter(ref => ref !== "#")
-    .reduce((schema, field) => schema[field], schema);
+  if (ref.startsWith("#/")) {
+    ref.substr(2).split("/");
+    return ref
+      .substr(2)
+      .split("/")
+      .reduce((schema, field) => schema[field], schema);
+  } else {
+    toError(
+      "Only local references supported at this point use json-schema-deref"
+    );
+  }
 }
 
 export function extractRefSchema(field, schema) {
