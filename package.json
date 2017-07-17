@@ -14,7 +14,7 @@
     "precommit": "lint-staged",
     "publish-to-npm": "npm run dist && npm version patch && npm publish",
     "tdd": "jest --watchAll",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "jest": {
     "verbose": true,

@@ -4,10 +4,9 @@ language:
 node_js:
 - "6"
 env:
-- ACTION=test
 - ACTION="run lint"
 - ACTION="run cs-check"
 - ACTION="run dist"
+- ACTION="test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
 script:
 - npm $ACTION
-- node --harmony_proxies node_modules/.bin/jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
