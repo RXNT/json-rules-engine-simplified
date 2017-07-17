@@ -10,3 +10,5 @@ env:
 - ACTION="run dist"
 script:
 - npm $ACTION
+after_success:
+  - coveralls
