@@ -10,5 +10,4 @@ env:
 - ACTION="run dist"
 script:
 - npm $ACTION
-after_success:
-  - coveralls
+- node --harmony_proxies node_modules/.bin/jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
