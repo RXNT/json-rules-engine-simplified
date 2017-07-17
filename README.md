@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/RxNT/json-rules-engine-simplified.svg?branch=master)](https://travis-ci.org/RxNT/json-rules-engine-simplified)
+[![Coverage Status](https://coveralls.io/repos/github/RxNT/json-rules-engine-simplified/badge.svg?branch=master)](https://coveralls.io/github/RxNT/json-rules-engine-simplified?branch=master)
+[![npm version](https://badge.fury.io/js/json-rules-engine-simplified.svg)](https://badge.fury.io/js/json-rules-engine-simplified)
 # json-rules-engine-simplified
 A simple rules engine expressed in JSON
 
