@@ -6,6 +6,14 @@ export function isDevelopment() {
   return process.env.NODE_ENV !== "production";
 }
 
+export function toArray(event) {
+  if (Array.isArray(event)) {
+    return event;
+  } else {
+    return [event];
+  }
+}
+
 export function toError(message) {
   if (isDevelopment()) {
     throw new ReferenceError(message);
@@ -34,6 +42,7 @@ function fetchSchema(ref, schema) {
     toError(
       "Only local references supported at this point use json-schema-deref"
     );
+    return undefined;
   }
 }
 
@@ -43,6 +52,7 @@ export function extractRefSchema(field, schema) {
   } else if (schema.properties[field] && schema.properties[field]["$ref"]) {
     return fetchSchema(schema.properties[field]["$ref"], schema);
   } else {
+    toError(`${field} has no $ref field ref schema extraction is impossible`);
     return undefined;
   }
 }

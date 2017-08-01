@@ -122,6 +122,7 @@ test("invalid field", () => {
     {
       conditions: {
         or: [{ lastName: "empty" }, { firstName: "empty" }],
+        and: [{ otherName: "empty" }],
       },
     },
   ]);
@@ -129,9 +130,11 @@ test("invalid field", () => {
   expect(listAllFields(invalidFieldConditions)).toEqual([
     "lastName",
     "firstName",
+    "otherName",
   ]);
   expect(listInvalidFields(invalidFieldConditions, defSchema)).toEqual([
     "lastName",
+    "otherName",
   ]);
   expect(() =>
     validateConditionFields(invalidFieldConditions, defSchema)
@@ -256,4 +259,20 @@ test("extract predicates from condition when with or & and", () => {
       schema
     )
   ).toEqual(["is", "less"]);
+});
+
+test("invalid or in rule", () => {
+  expect(() => predicatesFromRule({ or: { is: 1 } })).toThrow();
+  expect(() => predicatesFromRule({ and: { is: 1 } })).toThrow();
+
+  expect(testInProd(() => predicatesFromRule({ or: { is: 1 } }))).toEqual([]);
+  expect(testInProd(() => predicatesFromRule({ and: { is: 1 } }))).toEqual([]);
+});
+
+test("invalid or in condition", () => {
+  expect(() => predicatesFromCondition({ or: {} })).toThrow();
+  expect(() => predicatesFromCondition({ and: {} })).toThrow();
+
+  expect(testInProd(() => predicatesFromCondition({ or: {} }))).toEqual([]);
+  expect(testInProd(() => predicatesFromCondition({ and: {} }))).toEqual([]);
 });

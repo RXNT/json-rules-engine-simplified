@@ -5,6 +5,7 @@ import {
   toError,
   extractRefSchema,
   isRefArray,
+  toArray,
 } from "../src/utils";
 import { testInProd } from "./utils";
 
@@ -57,6 +58,9 @@ test("extract referenced schema", () => {
       primaryMedication: {
         $ref: "#/definitions/medication",
       },
+      externalConfig: {
+        $ref: "http://example.com/oneschema.json",
+      },
     },
   };
 
@@ -67,4 +71,19 @@ test("extract referenced schema", () => {
   expect(extractRefSchema("primaryMedication", schema)).toEqual(
     schema.definitions.medication
   );
+
+  expect(() => extractRefSchema("externalConfig", schema)).toThrow();
+  expect(testInProd(() => extractRefSchema("externalConfig", schema))).toEqual(
+    undefined
+  );
+
+  expect(() => extractRefSchema("lastName", schema)).toThrow();
+  expect(testInProd(() => extractRefSchema("lastName", schema))).toEqual(
+    undefined
+  );
+});
+
+test("array transformation", () => {
+  expect(toArray("Yes")).toEqual(["Yes"]);
+  expect(toArray(["Yes", "No"])).toEqual(["Yes", "No"]);
 });
