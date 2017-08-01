@@ -422,6 +422,53 @@ let rules = [{
 
 Rules engine will go through all the elements in the array and trigger `require` if `any` of the elements meet the criteria.
 
+## Events
+
+Framework does not put any restrictions on event object, that will be triggered, in case conditions are meet
+
+For example, `event` can be a string:
+```js
+let rules = [{
+    conditions: { ... },
+    event: "require"
+}]
+```
+Or number
+```js
+let rules = [{
+    conditions: { ... },
+    event: 4
+}]
+```
+
+Or an `object`
+```js
+let rules = [{
+    conditions: { ... },
+    event: { 
+      type: "require",
+      params: { fields: [ "state" ]}
+    }
+}]
+```
+
+You can even return an array of events, each of which will be added to final array of results
+```js
+let rules = [{
+    conditions: { ... },
+    event: [
+      { 
+        type: "require",
+        params: { field: "state"}
+      },
+      { 
+        type: "remove",
+        params: { fields: "fake" }
+      },
+    ]
+}]
+```
+
 ## License
 
 The project is licensed under the Apache Licence 2.0.
