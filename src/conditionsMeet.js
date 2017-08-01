@@ -5,7 +5,9 @@ import selectn from "selectn";
 
 export default function conditionsMeet(conditions, formData) {
   if (!isObject(conditions) || !isObject(formData)) {
-    toError(`Rule ${conditions} with ${formData} can't be processed`);
+    toError(
+      `Rule ${JSON.stringify(conditions)} with ${formData} can't be processed`
+    );
   }
   return Object.keys(conditions).every(ref => {
     let refCondition = conditions[ref];

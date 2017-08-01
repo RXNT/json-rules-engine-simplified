@@ -422,6 +422,34 @@ let rules = [{
 
 Rules engine will go through all the elements in the array and trigger `require` if `any` of the elements meet the criteria.
 
+### Extending available predicates
+
+If for some reason the list of [predicates](https://github.com/landau/predicate) is insufficient for your needs, you can extend them pretty easy,
+by specifying additional predicates in global import object.
+
+For example, if we want to add `range` predicate, that would verify, that integer value is in range, we can do it like this: 
+```js
+import predicate from "predicate";
+import Engine from "json-rules-engine-simplified";
+
+predicate.range = predicate.curry((val, range) => {
+  return predicate.num(val) &&
+    predicate.array(range) &&
+    predicate.equal(range.length, 2) &&
+    predicate.num(range[0]) &&
+    predicate.num(range[1]) &&
+    predicate.greaterEq(val, range[0]) &&
+    predicate.lessEq(val, range[1]);
+});
+
+let engine = new Engine([{
+  conditions: { age: { range: [ 20, 40 ] } },
+  event: "hit"
+}]);
+```
+
+Validation will automatically catch new extension and work as expected.
+
 ## Events
 
 Framework does not put any restrictions on event object, that will be triggered, in case conditions are meet
