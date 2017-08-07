@@ -77,6 +77,8 @@ test("invalid rule", () => {
 });
 
 test("check array", () => {
+  expect(checkField([], "empty")).toBeTruthy();
+  expect(checkField([""], "empty")).toBeTruthy();
   expect(checkField([1, 2, 3, 4], { less: 50, greater: 5 })).toBeFalsy();
   expect(checkField([1, 2, 3, 4, 5, 6], { less: 50, greater: 5 })).toBeTruthy();
 

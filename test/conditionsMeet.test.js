@@ -5,11 +5,19 @@ test("sanity checkField", function() {
   expect(() => conditionsMeet({}, 0)).toThrow();
 });
 
+test("run predicate against array and contents", () => {
+  let condition = {
+    options: "empty",
+  };
+  expect(conditionsMeet(condition, [""])).toBeTruthy();
+  expect(conditionsMeet(condition, [])).toBeTruthy();
+});
+
 test("single line", () => {
   let condition = {
     firstName: "empty",
   };
-  expect(conditionsMeet(condition, {})).toBeTruthy();
+  expect(conditionsMeet(condition, [])).toBeTruthy();
   expect(conditionsMeet(condition, { firstName: "some" })).toBeFalsy();
   expect(conditionsMeet(condition, { firstName: "" })).toBeTruthy();
   expect(conditionsMeet(condition, { firstName: undefined })).toBeTruthy();
