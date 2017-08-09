@@ -20,7 +20,10 @@ export default function conditionsMeet(conditions, formData) {
     } else {
       let refVal = selectn(ref, formData);
       if (Array.isArray(refVal)) {
-        return refVal.some(val => conditionsMeet(refCondition, val));
+        return (
+          refVal.some(val => conditionsMeet(refCondition, val)) ||
+          checkField(refVal, refCondition)
+        );
       } else {
         return checkField(refVal, refCondition);
       }

@@ -5,6 +5,14 @@ test("sanity checkField", function() {
   expect(() => conditionsMeet({}, 0)).toThrow();
 });
 
+test("run predicate against array and elements", () => {
+  let condition = {
+    options: "empty",
+  };
+  expect(conditionsMeet(condition, [""])).toBeTruthy();
+  expect(conditionsMeet(condition, [])).toBeTruthy();
+});
+
 test("single line", () => {
   let condition = {
     firstName: "empty",
