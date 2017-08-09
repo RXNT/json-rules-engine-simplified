@@ -3,22 +3,22 @@ import { isObject } from "./utils";
 
 import { AND, NOT, OR } from "./constants";
 
-const checkRule = (fieldVal, rule) => {
+const doCheckField = (fieldVal, rule) => {
   if (isObject(rule)) {
     return Object.keys(rule).every(p => {
       let subRule = rule[p];
       if (p === OR || p === AND) {
         if (Array.isArray(subRule)) {
           if (p === OR) {
-            return subRule.some(rule => checkField(fieldVal, rule));
+            return subRule.some(rule => doCheckField(fieldVal, rule));
           } else {
-            return subRule.every(rule => checkField(fieldVal, rule));
+            return subRule.every(rule => doCheckField(fieldVal, rule));
           }
         } else {
           return false;
         }
       } else if (p === NOT) {
-        return !checkField(fieldVal, subRule);
+        return !doCheckField(fieldVal, subRule);
       } else if (predicate[p]) {
         return predicate[p](fieldVal, subRule);
       } else {
@@ -32,10 +32,10 @@ const checkRule = (fieldVal, rule) => {
 
 export default function checkField(fieldVal, rule) {
   if (Array.isArray(fieldVal)) {
-    let hasValidEntry = fieldVal.some(val => checkField(val, rule));
+    let hasValidEntry = fieldVal.some(val => doCheckField(val, rule));
     if (hasValidEntry) {
       return true;
     }
   }
-  return checkRule(fieldVal, rule);
+  return doCheckField(fieldVal, rule);
 }
