@@ -61,26 +61,32 @@ test("extract referenced schema", () => {
       externalConfig: {
         $ref: "http://example.com/oneschema.json",
       },
+      registration: {
+        type: "object",
+        properties: {
+          firstName: { type: "string" },
+          lastName: { type: "string" },
+        },
+      },
     },
   };
 
+  let { definitions: { medication }, properties: { registration } } = schema;
+
   expect(isRefArray("medications", schema)).toBeTruthy();
-  expect(extractRefSchema("medications", schema)).toEqual(
-    schema.definitions.medication
-  );
-  expect(extractRefSchema("primaryMedication", schema)).toEqual(
-    schema.definitions.medication
-  );
+  expect(extractRefSchema("medications", schema)).toEqual(medication);
+  expect(extractRefSchema("primaryMedication", schema)).toEqual(medication);
+  expect(extractRefSchema("registration", schema)).toEqual(registration);
 
   expect(() => extractRefSchema("externalConfig", schema)).toThrow();
-  expect(testInProd(() => extractRefSchema("externalConfig", schema))).toEqual(
-    undefined
-  );
+  expect(
+    testInProd(() => extractRefSchema("externalConfig", schema))
+  ).toBeUndefined();
 
   expect(() => extractRefSchema("lastName", schema)).toThrow();
-  expect(testInProd(() => extractRefSchema("lastName", schema))).toEqual(
-    undefined
-  );
+  expect(
+    testInProd(() => extractRefSchema("lastName", schema))
+  ).toBeUndefined();
 });
 
 test("array transformation", () => {

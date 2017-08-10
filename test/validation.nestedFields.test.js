@@ -41,6 +41,13 @@ let schema = {
     primaryMedication: {
       $ref: "#/definitions/medications",
     },
+    registration: {
+      type: "object",
+      properties: {
+        firstName: { type: "string" },
+        lastName: { type: "string" },
+      },
+    },
   },
 };
 

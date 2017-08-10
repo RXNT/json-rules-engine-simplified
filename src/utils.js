@@ -51,6 +51,11 @@ export function extractRefSchema(field, schema) {
     return fetchSchema(schema.properties[field].items["$ref"], schema);
   } else if (schema.properties[field] && schema.properties[field]["$ref"]) {
     return fetchSchema(schema.properties[field]["$ref"], schema);
+  } else if (
+    schema.properties[field] &&
+    schema.properties[field].type === "object"
+  ) {
+    return schema.properties[field];
   } else {
     toError(`${field} has no $ref field ref schema extraction is impossible`);
     return undefined;
