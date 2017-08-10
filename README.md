@@ -31,7 +31,7 @@ npm install --s json-rules-engine-simplified
 The simplest example of using `json-rules-engine-simplified`
 
 ```jsx
-import { Engine } from 'json-rules-engine-simplified'
+import Engine from 'json-rules-engine-simplified'
 
 let rules = [{
     conditions: {
@@ -64,6 +64,37 @@ engine
 ```
 
 Rules engine expects to know all the rules in advance, it effectively drops builder pattern, but keeps the interface.
+
+### Appending rule to existing engine
+
+You don't have to specify all rules at the construction time, you can add rules in different time in process.
+In order to add new rules to the `Engine` use `addRule` function.
+
+For example, following declarations are the same
+```js
+import Engine from 'json-rules-engine-simplified';
+
+let engineA = new Engine();
+
+let rule = {
+    conditions: {
+      firstName: "empty"
+    },
+    event: {
+        type: "remove",
+        params: { 
+            field: "password"
+        },
+    }
+};
+
+engineA.addRule(rule);
+
+let engineB = new Engine(rule);
+
+```
+
+In this case `engineA` and `engineB` will give the same results.
 
 ## Validation
 
