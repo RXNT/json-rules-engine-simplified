@@ -1,6 +1,6 @@
 {
   "name": "json-rules-engine-simplified",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Simpl JSON rules engine",
   "private": false,
   "author": "mavarazy@gmail.com",
@@ -12,7 +12,7 @@
     "dist": "npm run build:lib && npm run build:dist",
     "lint": "eslint src test",
     "precommit": "lint-staged",
-    "publish-to-npm": "npm run dist && npm version patch && npm publish",
+    "publish-to-npm": "npm run dist && npm publish && npm version patch",
     "tdd": "jest --watchAll",
     "test": "jest --coverage"
   },
