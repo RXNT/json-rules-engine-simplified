@@ -30,7 +30,8 @@ export default function checkField(fieldVal, rule) {
   if (Array.isArray(fieldVal)) {
     return isObject(rule)
       ? fieldVal.some(val => checkField(val, rule)) || parseObjectRule(rule)
-      : fieldVal.some(val => checkField(val, rule)) || predicate[rule](fieldVal);
+      : fieldVal.some(val => checkField(val, rule)) ||
+        predicate[rule](fieldVal);
   } else if (isObject(rule)) {
     // Complicated rule - like { greater then 10 }
     return parseObjectRule(rule, fieldVal);
