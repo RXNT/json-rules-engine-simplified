@@ -51,3 +51,11 @@ test("age less 70 ", () => {
 test("age greater 70 ", () => {
   return engine.run({ age: 71 }).then(actions => expect(actions).toEqual([]));
 });
+
+test("empty engine creation", () => {
+  expect(new Engine()).not.toBeUndefined();
+  expect(new Engine(undefined)).not.toBeUndefined();
+  expect(new Engine(null)).not.toBeUndefined();
+  expect(new Engine([])).not.toBeUndefined();
+  expect(new Engine(rules[0])).not.toBeUndefined();
+});
