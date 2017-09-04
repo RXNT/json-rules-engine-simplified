@@ -1,4 +1,5 @@
 import conditionsMeet from "../src/conditionsMeet";
+import { testInProd } from "./utils";
 
 test("sanity checkField", function() {
   expect(() => conditionsMeet("empty", {})).toThrow();
@@ -52,4 +53,11 @@ test("NOT condition", () => {
   expect(
     conditionsMeet(condition, { firstName: "Will", lastName: "Smith" })
   ).toBeFalsy();
+});
+
+test("invalid condition", () => {
+  expect(() => conditionsMeet("empty", {})).toThrow();
+  expect(() => conditionsMeet({}, "empty")).toThrow();
+  expect(testInProd(() => conditionsMeet("empty", {}))).toBeFalsy();
+  expect(testInProd(() => conditionsMeet({}, "empty"))).toBeFalsy();
 });

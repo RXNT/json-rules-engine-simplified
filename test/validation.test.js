@@ -181,7 +181,7 @@ test("invalid field NOT or", () => {
     {
       conditions: {
         not: {
-          firstName: "or",
+          firstName: "bad",
         },
       },
       event: { type: "remove" },
@@ -189,7 +189,7 @@ test("invalid field NOT or", () => {
   ]);
 
   expect(listInvalidPredicates(invalidFieldNotWithOr, defSchema)).toEqual([
-    "or",
+    "bad",
   ]);
   expect(() => validatePredicates(invalidFieldNotWithOr, defSchema)).toThrow();
 });

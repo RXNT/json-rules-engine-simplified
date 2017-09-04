@@ -3,15 +3,15 @@ import checkField from "./checkField";
 import { OR, AND, NOT } from "./constants";
 import selectn from "selectn";
 
-export default function conditionsMeet(conditions, formData) {
-  if (!isObject(conditions) || !isObject(formData)) {
+export default function conditionsMeet(condition, formData) {
+  if (!isObject(condition) || !isObject(formData)) {
     toError(
-      `Rule ${JSON.stringify(conditions)} with ${formData} can't be processed`
+      `Rule ${JSON.stringify(condition)} with ${formData} can't be processed`
     );
     return false;
   }
-  return Object.keys(conditions).every(ref => {
-    let refCondition = conditions[ref];
+  return Object.keys(condition).every(ref => {
+    let refCondition = condition[ref];
     if (ref === OR) {
       return refCondition.some(rule => conditionsMeet(rule, formData));
     } else if (ref === AND) {
