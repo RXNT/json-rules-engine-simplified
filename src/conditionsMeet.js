@@ -8,6 +8,7 @@ export default function conditionsMeet(conditions, formData) {
     toError(
       `Rule ${JSON.stringify(conditions)} with ${formData} can't be processed`
     );
+    return false;
   }
   return Object.keys(conditions).every(ref => {
     let refCondition = conditions[ref];
