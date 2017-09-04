@@ -80,9 +80,23 @@ export function listAllPredicates(conditions, schema) {
   return allPredicates.filter((v, i, a) => allPredicates.indexOf(v) === i);
 }
 
+const UNSUPPORTED_PREDICATES = [
+  "and",
+  "or",
+  "ternary",
+  "every",
+  "some",
+  "curry",
+  "partial",
+  "complement",
+  "mod",
+];
+
 export function listInvalidPredicates(conditions, schema) {
   let refPredicates = listAllPredicates(conditions, schema);
-  return refPredicates.filter(p => predicate[p] === undefined);
+  return refPredicates.filter(
+    p => UNSUPPORTED_PREDICATES.includes(p) || predicate[p] === undefined
+  );
 }
 
 export function validatePredicates(conditions, schema) {

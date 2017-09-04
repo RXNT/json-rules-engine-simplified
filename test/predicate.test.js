@@ -12,10 +12,6 @@ test("work with empty", function() {
   expect(predicate.empty(null)).toBeTruthy();
 });
 
-test("and is not predicate", () => {
-  expect(predicate.and).toBeUndefined();
-});
-
 predicate.range = predicate.curry((val, range) => {
   return (
     predicate.num(val) &&
