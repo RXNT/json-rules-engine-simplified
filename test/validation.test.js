@@ -188,6 +188,9 @@ test("invalid field NOT or", () => {
     },
   ]);
 
+  expect(listInvalidPredicates(invalidFieldNotWithOr, defSchema)).toEqual([
+    "or",
+  ]);
   expect(() => validatePredicates(invalidFieldNotWithOr, defSchema)).toThrow();
 });
 
