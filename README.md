@@ -14,6 +14,7 @@ as such it has similar interface and configuration, but simplified predicate lan
 - Basic boolean operations (`and` `or` and `not`) that allow to have any arbitrary complexity 
 - Rules expressed in simple, easy to read JSON 
 - Declarative conditional logic with [predicates](https://github.com/landau/predicate)
+- Relevant conditional logic support 
 - Support of nested structures with [selectn](https://github.com/wilmoore/selectn.js) 
 including composite arrays 
 - Secure - no use of eval()
@@ -480,6 +481,35 @@ let engine = new Engine([{
 ```
 
 Validation will automatically catch new extension and work as expected.
+
+## Relevant conditional logic
+
+Sometimes you would want to validate `formData` fields one against the other.
+You can do this simply by appending `$` to the beginning of reference.
+
+For example, you want to trigger event only when `a` is less then `b`, when you don't know ahead `a` or `b` values
+
+```js
+let schema = {
+  type: "object",
+  properties: {
+    a: { type: "number" },
+    b: { type: "number" }
+  }
+}
+
+let rules = [{
+  conditions: {
+    a: { less: "$b" }
+  },
+  event: "some"
+}]
+
+let engine = new Engine(schema, rules);
+``` 
+This is how you do it, in run time `$b` will be replaces with field `b` value.
+
+Relevant fields work on nested objects as well as on any field condition. 
 
 ## Events
 
