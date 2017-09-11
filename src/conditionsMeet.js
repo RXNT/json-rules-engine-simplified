@@ -3,6 +3,21 @@ import checkField from "./checkField";
 import { OR, AND, NOT } from "./constants";
 import selectn from "selectn";
 
+export function toRelCondition(refCondition, formData) {
+  if (Array.isArray(refCondition)) {
+    return refCondition.map(cond => toRelCondition(cond, formData));
+  } else if (isObject(refCondition)) {
+    return Object.keys(refCondition).reduce((agg, field) => {
+      agg[field] = toRelCondition(refCondition[field], formData);
+      return agg;
+    }, {});
+  } else if (typeof refCondition === "string" && refCondition.startsWith("$")) {
+    return selectn(refCondition.substr(1), formData);
+  } else {
+    return refCondition;
+  }
+}
+
 export default function conditionsMeet(condition, formData) {
   if (!isObject(condition) || !isObject(formData)) {
     toError(
@@ -21,12 +36,15 @@ export default function conditionsMeet(condition, formData) {
     } else {
       let refVal = selectn(ref, formData);
       if (Array.isArray(refVal)) {
+        let condMeatOnce = refVal.some(val =>
+          conditionsMeet(refCondition, val)
+        );
         return (
-          refVal.some(val => conditionsMeet(refCondition, val)) ||
-          checkField(refVal, refCondition)
+          condMeatOnce ||
+          checkField(refVal, toRelCondition(refCondition, formData))
         );
       } else {
-        return checkField(refVal, refCondition);
+        return checkField(refVal, toRelCondition(refCondition, formData));
       }
     }
   });
