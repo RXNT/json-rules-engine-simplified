@@ -8,6 +8,18 @@ import {
 } from "./utils";
 import { OR, AND, NOT } from "./constants";
 
+const UNSUPPORTED_PREDICATES = [
+  "and",
+  "or",
+  "ternary",
+  "every",
+  "some",
+  "curry",
+  "partial",
+  "complement",
+  "mod",
+];
+
 export function predicatesFromRule(rule, schema) {
   if (isObject(rule)) {
     return flatMap(Object.keys(rule), p => {
@@ -80,18 +92,6 @@ export function listAllPredicates(conditions, schema) {
   return allPredicates.filter((v, i, a) => allPredicates.indexOf(v) === i);
 }
 
-const UNSUPPORTED_PREDICATES = [
-  "and",
-  "or",
-  "ternary",
-  "every",
-  "some",
-  "curry",
-  "partial",
-  "complement",
-  "mod",
-];
-
 export function listInvalidPredicates(conditions, schema) {
   let refPredicates = listAllPredicates(conditions, schema);
   return refPredicates.filter(
@@ -106,30 +106,44 @@ export function validatePredicates(conditions, schema) {
   }
 }
 
+export function fieldsFromPredicates(predicate) {
+  if (Array.isArray(predicate)) {
+    return flatMap(predicate, fieldsFromPredicates);
+  } else if (isObject(predicate)) {
+    return flatMap(Object.keys(predicate), field => {
+      let predicateValue = predicate[field];
+      return fieldsFromPredicates(predicateValue);
+    });
+  } else if (typeof predicate === "string" && predicate.startsWith("$")) {
+    return [predicate.substr(1)];
+  } else {
+    return [];
+  }
+}
+
 export function fieldsFromCondition(condition) {
   return flatMap(Object.keys(condition), ref => {
+    let refCondition = condition[ref];
     if (ref === OR || ref === AND) {
-      return flatMap(condition[ref], w => fieldsFromCondition(w));
+      return flatMap(refCondition, fieldsFromCondition);
     } else if (ref === NOT) {
-      return fieldsFromCondition(condition[ref]);
-    } else if (ref.indexOf(".") === -1) {
-      return [ref];
+      return fieldsFromCondition(refCondition);
     } else {
-      return [];
+      return [ref].concat(fieldsFromPredicates(refCondition));
     }
   });
 }
 
 export function listAllFields(conditions) {
-  let allFields = flatMap(conditions, condition =>
-    fieldsFromCondition(condition)
-  );
-  return allFields.filter((v, i, a) => allFields.indexOf(v) === i);
+  let allFields = flatMap(conditions, fieldsFromCondition);
+  return allFields
+    .filter(field => field.indexOf(".") === -1)
+    .filter((v, i, a) => allFields.indexOf(v) === i);
 }
 
 export function listInvalidFields(conditions, schema) {
-  let ruleFields = listAllFields(conditions);
-  return ruleFields.filter(field => schema.properties[field] === undefined);
+  let allFields = listAllFields(conditions);
+  return allFields.filter(field => schema.properties[field] === undefined);
 }
 
 export function validateConditionFields(conditions, schema) {

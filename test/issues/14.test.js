@@ -35,3 +35,33 @@ test("complicated rules work", () => {
     expect(events[0]).toEqual({ type: "match" });
   });
 });
+
+test("validation rel fields work", () => {
+  let rules = [
+    {
+      conditions: {
+        a: { less: "$b" },
+      },
+      event: "some",
+    },
+  ];
+
+  let invSchema = {
+    type: "object",
+    properties: {
+      a: { type: "object" },
+    },
+  };
+
+  expect(() => new Engine(rules, invSchema)).toThrow();
+
+  let valSchema = {
+    type: "object",
+    properties: {
+      a: { type: "object" },
+      b: { type: "number" },
+    },
+  };
+
+  expect(() => new Engine(rules, valSchema)).not.toBeUndefined();
+});
