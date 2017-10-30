@@ -1,7 +1,11 @@
 import selectn from "selectn";
 
+export function normRef(ref) {
+  return ref.replace(/\$/g, ".");
+}
+
 export function selectRef(field, formData) {
-  let ref = field.replace(/\$/g, ".");
+  let ref = normRef(field);
   return selectn(ref, formData);
 }
 

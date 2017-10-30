@@ -5,6 +5,7 @@ import {
   toError,
   isRefArray,
   extractRefSchema,
+  normRef,
 } from "./utils";
 import { OR, AND, NOT } from "./constants";
 
@@ -51,6 +52,7 @@ export function predicatesFromRule(rule, schema) {
 export function predicatesFromCondition(condition, schema) {
   return flatMap(Object.keys(condition), ref => {
     let refVal = condition[ref];
+    ref = normRef(ref);
     if (ref === OR || ref === AND) {
       if (Array.isArray(refVal)) {
         return flatMap(refVal, c => predicatesFromCondition(c, schema));
@@ -129,7 +131,7 @@ export function fieldsFromCondition(condition) {
     } else if (ref === NOT) {
       return fieldsFromCondition(refCondition);
     } else {
-      return [ref].concat(fieldsFromPredicates(refCondition));
+      return [normRef(ref)].concat(fieldsFromPredicates(refCondition));
     }
   });
 }
