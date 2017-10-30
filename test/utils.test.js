@@ -6,6 +6,7 @@ import {
   extractRefSchema,
   isRefArray,
   toArray,
+  selectRef,
 } from "../src/utils";
 import { testInProd } from "./utils";
 
@@ -92,4 +93,9 @@ test("extract referenced schema", () => {
 test("array transformation", () => {
   expect(toArray("Yes")).toEqual(["Yes"]);
   expect(toArray(["Yes", "No"])).toEqual(["Yes", "No"]);
+});
+
+test("select reference", () => {
+  expect(selectRef("address.zip", { address: { zip: 1000 } })).toEqual(1000);
+  expect(selectRef("address$zip", { address: { zip: 1000 } })).toEqual(1000);
 });

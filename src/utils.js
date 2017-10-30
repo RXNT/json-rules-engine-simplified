@@ -1,3 +1,10 @@
+import selectn from "selectn";
+
+export function selectRef(field, formData) {
+  let ref = field.replace(/\$/g, ".");
+  return selectn(ref, formData);
+}
+
 export function isObject(obj) {
   return typeof obj === "object" && obj !== null;
 }

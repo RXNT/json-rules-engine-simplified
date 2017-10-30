@@ -482,6 +482,22 @@ let engine = new Engine([{
 
 Validation will automatically catch new extension and work as expected.
 
+## Logic on nested objects
+
+Support of nested structures with [selectn](https://github.com/wilmoore/selectn.js), so basically any query you can define in selectn you can use here.
+
+For example if in previous example, age would be a part of person object, we could work with it like this:
+```js
+    let rules = [ { conditions: { "person.age": { range: [ 20, 40 ] } } } ]; 
+```
+
+Also in order to support systems where keys with "." not allowed (for example if you would like to store data in mongo), you can use `$` to separate references:
+ 
+For example, this is the same condition, but instead of `.` it uses `$`:
+```js
+    let rules = [ { conditions: { "person$age": { range: [ 20, 40 ] } } } ]; 
+```
+
 ## Relevant conditional logic
 
 Sometimes you would want to validate `formData` fields one against the other.

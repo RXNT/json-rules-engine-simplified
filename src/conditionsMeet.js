@@ -1,7 +1,6 @@
-import { isObject, toError } from "./utils";
+import { isObject, toError, selectRef } from "./utils";
 import checkField from "./checkField";
 import { OR, AND, NOT } from "./constants";
-import selectn from "selectn";
 
 export function toRelCondition(refCondition, formData) {
   if (Array.isArray(refCondition)) {
@@ -12,7 +11,7 @@ export function toRelCondition(refCondition, formData) {
       return agg;
     }, {});
   } else if (typeof refCondition === "string" && refCondition.startsWith("$")) {
-    return selectn(refCondition.substr(1), formData);
+    return selectRef(refCondition.substr(1), formData);
   } else {
     return refCondition;
   }
@@ -34,7 +33,7 @@ export default function conditionsMeet(condition, formData) {
     } else if (ref === NOT) {
       return !conditionsMeet(refCondition, formData);
     } else {
-      let refVal = selectn(ref, formData);
+      let refVal = selectRef(ref, formData);
       if (Array.isArray(refVal)) {
         let condMeatOnce = refVal.some(val =>
           conditionsMeet(refCondition, val)
