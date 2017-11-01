@@ -30,6 +30,12 @@ let schema = {
     externalConfig: {
       $ref: "http://example.com/oneschema.json",
     },
+    invalidArrayRef: {
+      type: "array",
+      items: {
+        $ref: "http://example.com/oneschema.json",
+      },
+    },
   },
 };
 
@@ -40,6 +46,17 @@ test("condition with external ref", () => {
   expect(
     testInProd(() =>
       predicatesFromCondition({ "externalConfig.name": "empty" }, schema)
+    )
+  ).toEqual([]);
+});
+
+test("array condition with external ref", () => {
+  expect(() =>
+    predicatesFromCondition({ "invalidArrayRef.name": "empty" }, schema)
+  ).toThrow();
+  expect(
+    testInProd(() =>
+      predicatesFromCondition({ "invalidArrayRef.name": "empty" }, schema)
     )
   ).toEqual([]);
 });
