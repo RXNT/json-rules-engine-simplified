@@ -44,7 +44,6 @@ export function isRefArray(field, schema) {
 
 function fetchSchema(ref, schema) {
   if (ref.startsWith("#/")) {
-    ref.substr(2).split("/");
     return ref
       .substr(2)
       .split("/")
