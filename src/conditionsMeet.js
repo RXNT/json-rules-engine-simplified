@@ -38,6 +38,7 @@ export default function conditionsMeet(condition, formData) {
         let condMeatOnce = refVal.some(val =>
           conditionsMeet(refCondition, val)
         );
+        // It's either true for an element in an array or for the whole array
         return (
           condMeatOnce ||
           checkField(refVal, toRelCondition(refCondition, formData))
