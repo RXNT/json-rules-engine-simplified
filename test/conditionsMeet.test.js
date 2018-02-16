@@ -14,6 +14,17 @@ test("run predicate against array and elements", () => {
   expect(conditionsMeet(condition, [])).toBeTruthy();
 });
 
+test("handles array of non-objects", () => {
+  let condition = {
+    options: {
+      contains: "foo",
+    },
+  };
+  expect(conditionsMeet(condition, { options: ["bar"] })).toBeFalsy();
+  expect(conditionsMeet(condition, { options: [] })).toBeFalsy();
+  expect(conditionsMeet(condition, { options: ["foo", "bar"] })).toBeTruthy();
+});
+
 test("single line", () => {
   let condition = {
     firstName: "empty",
