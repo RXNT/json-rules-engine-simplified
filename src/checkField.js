@@ -31,11 +31,5 @@ const doCheckField = (fieldVal, rule) => {
 };
 
 export default function checkField(fieldVal, rule) {
-  if (Array.isArray(fieldVal)) {
-    let hasValidEntry = fieldVal.some(val => doCheckField(val, rule));
-    if (hasValidEntry) {
-      return true;
-    }
-  }
   return doCheckField(fieldVal, rule);
 }

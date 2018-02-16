@@ -75,13 +75,3 @@ test("invalid rule", () => {
   expect(checkField(60, { and: { less: 50, greater: 5 } })).toBeFalsy();
   expect(checkField(60, { "&": { less: 50, greater: 5 } })).toBeFalsy();
 });
-
-test("check array", () => {
-  expect(checkField([], "empty")).toBeTruthy();
-  expect(checkField([""], "empty")).toBeTruthy();
-  expect(checkField([1, 2, 3, 4], { less: 50, greater: 5 })).toBeFalsy();
-  expect(checkField([1, 2, 3, 4, 5, 6], { less: 50, greater: 5 })).toBeTruthy();
-
-  expect(checkField(["B", "C", "D", "E"], { equal: "A" })).toBeFalsy();
-  expect(checkField(["A", "B", "C", "D", "E"], { equal: "A" })).toBeTruthy();
-});

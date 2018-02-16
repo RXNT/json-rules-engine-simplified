@@ -25,6 +25,18 @@ test("handles array of non-objects", () => {
   expect(conditionsMeet(condition, { options: ["foo", "bar"] })).toBeTruthy();
 });
 
+// throws error
+test("handles array of numbers", () => {
+  let condition = {
+    options: {
+      contains: 2,
+    },
+  };
+  expect(conditionsMeet(condition, { options: [1, 2] })).toBeTruthy();
+  expect(conditionsMeet(condition, { options: [1] })).toBeFalsy();
+  expect(conditionsMeet(condition, { options: [] })).toBeFalsy();
+});
+
 test("single line", () => {
   let condition = {
     firstName: "empty",
