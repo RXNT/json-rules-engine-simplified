@@ -39,7 +39,7 @@
   "engineStrict": false,
   "engines": {
     "npm": "^2.14.7",
-    "node": ">=6"
+    "node": ">=8"
   },
   "dependencies": {
     "deep-equal": "1.0.1",
