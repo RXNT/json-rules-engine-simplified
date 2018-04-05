@@ -1,3 +1,13 @@
+<a name="0.1.17"></a>
+## <small>0.1.17 (2018-04-05)</small>
+
+* 0.1.17 ([6c0d891](https://github.com/RxNT/json-rules-engine-simplified/commit/6c0d891))
+* Adding Changelog ([1bc894e](https://github.com/RxNT/json-rules-engine-simplified/commit/1bc894e))
+* fix #23 ([6322d1b](https://github.com/RxNT/json-rules-engine-simplified/commit/6322d1b)), closes [#23](https://github.com/RxNT/json-rules-engine-simplified/issues/23)
+* test for #22 ([3e59ef7](https://github.com/RxNT/json-rules-engine-simplified/commit/3e59ef7)), closes [#22](https://github.com/RxNT/json-rules-engine-simplified/issues/22)
+
+
+
 <a name="0.1.16"></a>
 ## <small>0.1.16 (2018-02-16)</small>
 
