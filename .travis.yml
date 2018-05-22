@@ -5,6 +5,5 @@ node_js:
 - "8"
 script:
 - npm run lint
-- npm run cs-check
 - npm run dist
 - npm test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
