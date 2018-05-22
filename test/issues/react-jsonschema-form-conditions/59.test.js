@@ -1,42 +1,38 @@
 import Engine from "../../../src/index";
 
-let rulesA = [
-  {
-    conditions: {
-      hasBenefitsReference: { is: true },
-    },
-    event: [
-      {
-        type: "require",
-        params: {
-          field: "hasBD2Reference",
-        },
-      },
-      {
-        type: "require",
-        params: {
-          field: "BD2Reference",
-        },
-      },
-    ],
+let rulesWithTwoEvents = {
+  conditions: {
+    hasBenefitsReference: { is: true },
   },
-];
+  event: [
+    {
+      type: "require",
+      params: {
+        field: "hasBD2Reference",
+      },
+    },
+    {
+      type: "require",
+      params: {
+        field: "BD2Reference",
+      },
+    },
+  ],
+};
 
-let rulesB = [
-  {
-    conditions: {
-      hasBenefitsReference: { is: true },
-    },
-    event: [
-      {
-        type: "require",
-        params: {
-          field: ["hasBD2Reference", "BD2Reference"],
-        },
-      },
-    ],
+let rulesWithSingleEvent = {
+  conditions: {
+    hasBenefitsReference: { is: true },
   },
-];
+  event: [
+    {
+      type: "require",
+      params: {
+        field: ["hasBD2Reference", "BD2Reference"],
+      },
+    },
+  ],
+};
 
 const schema = {
   type: "object",
@@ -60,20 +56,42 @@ const schema = {
   },
 };
 
-test("creation with multi rules A", () => {
-  let engine = new Engine(rulesA, schema);
+test("creation with two events on creation", () => {
+  let engine = new Engine([rulesWithTwoEvents], schema);
 
   return engine.run({ hasBenefitsReference: true }).then(events => {
     expect(events.length).toEqual(2);
-    expect(events).toEqual(rulesA[0].event);
+    expect(events).toEqual(rulesWithTwoEvents.event);
   });
 });
 
-test("creation with no problems B", () => {
-  let engine = new Engine(rulesB, schema);
+test("creation with two events on add", () => {
+  let engine = new Engine([], schema);
+
+  engine.addRule(rulesWithTwoEvents);
+
+  return engine.run({ hasBenefitsReference: true }).then(events => {
+    expect(events.length).toEqual(2);
+    expect(events).toEqual(rulesWithTwoEvents.event);
+  });
+});
+
+test("creation with single event on creatin", () => {
+  let engine = new Engine([rulesWithSingleEvent], schema);
 
   return engine.run({ hasBenefitsReference: true }).then(events => {
     expect(events.length).toEqual(1);
-    expect(events).toEqual(rulesB[0].event);
+    expect(events).toEqual(rulesWithSingleEvent.event);
+  });
+});
+
+test("creation with single event on add", () => {
+  let engine = new Engine([], schema);
+
+  engine.addRule(rulesWithSingleEvent);
+
+  return engine.run({ hasBenefitsReference: true }).then(events => {
+    expect(events.length).toEqual(1);
+    expect(events).toEqual(rulesWithSingleEvent.event);
   });
 });
