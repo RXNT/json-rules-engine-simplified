@@ -1,4 +1,4 @@
-import predicate from "predicate/dist/predicate";
+import predicate from "predicate";
 import Engine from "../src/Engine";
 
 test("equal work with same strings", function() {

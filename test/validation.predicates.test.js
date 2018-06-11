@@ -1,4 +1,4 @@
-import predicate from "predicate/dist/predicate";
+import predicate from "predicate";
 import { listInvalidPredicates } from "../src/validation";
 
 let schema = {
