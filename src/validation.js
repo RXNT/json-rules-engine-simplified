@@ -1,4 +1,4 @@
-import predicate from "predicate";
+import predicate from "predicate/dist/predicate";
 import {
   flatMap,
   isObject,
