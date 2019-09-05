@@ -72,7 +72,10 @@ test("extract referenced schema", () => {
     },
   };
 
-  let { definitions: { medication }, properties: { registration } } = schema;
+  let {
+    definitions: { medication },
+    properties: { registration },
+  } = schema;
 
   expect(isRefArray("medications", schema)).toBeTruthy();
   expect(extractRefSchema("medications", schema)).toEqual(medication);

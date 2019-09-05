@@ -35,8 +35,8 @@ export default function conditionsMeet(condition, formData) {
     } else {
       let refVal = selectRef(ref, formData);
       if (Array.isArray(refVal)) {
-        let condMeatOnce = refVal.some(
-          val => (isObject(val) ? conditionsMeet(refCondition, val) : false)
+        let condMeatOnce = refVal.some(val =>
+          isObject(val) ? conditionsMeet(refCondition, val) : false
         );
         // It's either true for an element in an array or for the whole array
         return (

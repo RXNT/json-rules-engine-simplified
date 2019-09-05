@@ -1,4 +1,4 @@
-import selectn from "selectn";
+import selectn from "../src/selectn";
 
 test("selectn on array", function() {
   let a = {
