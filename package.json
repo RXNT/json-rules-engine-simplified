@@ -42,9 +42,11 @@
     "node": ">=8"
   },
   "dependencies": {
+    "brackets2dots": "^1.1.0",
+    "curry2": "^1.0.3",
     "deep-equal": "1.0.1",
-    "predicate": "1.2.0",
-    "selectn": "1.1.2"
+    "dotsplit.js": "^1.1.0",
+    "predicate": "1.2.0"
   },
   "devDependencies": {
     "atob": "^2.0.3",
