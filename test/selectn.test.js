@@ -1,20 +1,14 @@
 import selectn from "../src/selectn";
 
-test("selectn on array", function() {
+test("selectn", function() {
   let a = {
     medications: {
       type: "A",
+      fn: () => "B",
     },
   };
 
   expect(selectn("medications.type", a)).toEqual("A");
-
-  // let obj = {
-  //   medications: [
-  //     { type: "A" },
-  //     { type: "B" },
-  //     { type: "C" }
-  //   ]
-  // };
-  //expect(selectn("medications.type", obj)).toEqual(["A", "B", "C"]);
+  expect(selectn("medications.fn", a)).toEqual("B");
+  expect(selectn("", a)).toEqual(undefined);
 });

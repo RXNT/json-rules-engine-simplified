@@ -3,7 +3,6 @@
 var curry2 = require("curry2");
 var dotted = require("brackets2dots");
 var splits = require("dotsplit.js");
-var string = Object.prototype.toString;
 
 module.exports = curry2(selectn);
 
@@ -24,14 +23,18 @@ module.exports = curry2(selectn);
  */
 function selectn(path, object) {
   var idx = -1;
-  var seg =
-    string.call(path) === "[object Array]" ? path : splits(dotted(path));
+  var seg = splits(dotted(path));
   var end = seg.length;
-  var ref = end ? object : void 0;
+
+  if (!end) {
+    return undefined;
+  }
+
+  var ref = object;
 
   while (++idx < end) {
     if (Object(ref) !== ref) {
-      return void 0;
+      return undefined;
     }
     ref = ref[seg[idx]];
   }
