@@ -27,7 +27,13 @@ let engine = new Engine([
     conditions: { age: { range: [20, 40] } },
     event: "hit",
   },
-]);
+], {
+  properties: {
+    age: {
+      type: 'number'
+    }
+  }  
+});
 
 test("not in range left", () => {
   return engine.run({ age: 10 }).then(events => expect(events).toEqual([]));
