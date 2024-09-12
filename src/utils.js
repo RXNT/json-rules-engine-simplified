@@ -1,4 +1,4 @@
-import selectn from "selectn";
+import selectn from "./selectn";
 
 export function normRef(ref) {
   return ref.replace(/\$/g, ".");

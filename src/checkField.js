@@ -1,4 +1,4 @@
-import predicate from "predicate";
+import predicate from "predicate/dist/predicate";
 import { isObject } from "./utils";
 
 import { AND, NOT, OR } from "./constants";
