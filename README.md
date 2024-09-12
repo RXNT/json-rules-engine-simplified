@@ -137,7 +137,7 @@ WARNING!!! Currently validation does not support nested structures, so be extra 
 Conditional logic is based on public [predicate](https://github.com/landau/predicate) library 
 with boolean logic extension. 
 
-[Predicate](https://github.com/landau/predicate) library has a lot of predicates that we found more, than sufficient for our use cases.
+[Predicate](https://github.com/landau/predicate) library has a lot of predicates that we found more than sufficient for our use cases.
 
 To showcase conditional logic, we'll be using simple `registration` schema
 
